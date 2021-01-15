@@ -10,8 +10,8 @@ using WeatherDataLibrary.DataAccess;
 namespace WeatherDataLibrary.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210108122041_try5")]
-    partial class try5
+    [Migration("20210111135418_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,7 +50,7 @@ namespace WeatherDataLibrary.Migrations
 
                     b.HasIndex("SensorId");
 
-                    b.ToTable("Data");
+                    b.ToTable("Datas");
                 });
 
             modelBuilder.Entity("WeatherDataLibrary.Models.Sensor", b =>

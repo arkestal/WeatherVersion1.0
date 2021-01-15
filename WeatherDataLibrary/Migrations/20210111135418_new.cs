@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WeatherDataLibrary.Migrations
 {
-    public partial class try5 : Migration
+    public partial class @new : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,7 +21,7 @@ namespace WeatherDataLibrary.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Data",
+                name: "Datas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -35,9 +35,9 @@ namespace WeatherDataLibrary.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Data", x => x.Id);
+                    table.PrimaryKey("PK_Datas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Data_Sensors_SensorId",
+                        name: "FK_Datas_Sensors_SensorId",
                         column: x => x.SensorId,
                         principalTable: "Sensors",
                         principalColumn: "SensorId",
@@ -45,15 +45,15 @@ namespace WeatherDataLibrary.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Data_SensorId",
-                table: "Data",
+                name: "IX_Datas_SensorId",
+                table: "Datas",
                 column: "SensorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Data");
+                name: "Datas");
 
             migrationBuilder.DropTable(
                 name: "Sensors");

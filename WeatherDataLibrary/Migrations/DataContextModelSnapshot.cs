@@ -48,7 +48,7 @@ namespace WeatherDataLibrary.Migrations
 
                     b.HasIndex("SensorId");
 
-                    b.ToTable("Data");
+                    b.ToTable("Datas");
                 });
 
             modelBuilder.Entity("WeatherDataLibrary.Models.Sensor", b =>

@@ -8,6 +8,6 @@ namespace WeatherDataLibrary.Models
     {
         public int SensorId { get; set; }
         public string SensorName { get; set; }
-        public List<Data> WeatherData { get; set; } = new List<Data>();
+        public List<Data> WeatherData { get; set; }
     }
 }

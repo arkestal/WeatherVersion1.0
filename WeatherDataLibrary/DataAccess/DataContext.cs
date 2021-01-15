@@ -27,5 +27,6 @@ namespace WeatherDataLibrary.DataAccess
         }
 
         public DbSet<Models.Sensor> Sensors { get; set; }
+        public DbSet<Models.Data> Datas { get; set; }
     }
 }
