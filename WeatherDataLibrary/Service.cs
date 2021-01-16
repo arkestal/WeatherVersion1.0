@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using WeatherDataLibrary.DataAccess;
 using WeatherDataLibrary.Models;
 
@@ -61,34 +60,21 @@ namespace WeatherDataLibrary
             return numberOfDays;
         }
 
-        public static string InOrOut()
+        public static string InOrOut(string sensorName)
         {
-            int acceptedAnswer = 0;
-            string sensorName = "default";
-            Console.Write("\n\t[1] Inne" +
-                "\n\t[2] Ute" +
-                "\n\tVälj: ");
-            do
+            ConsoleKey insideOutside = Console.ReadKey().Key;
+            Console.Clear();
+            switch (insideOutside)
             {
-                ConsoleKey insideOutside = Console.ReadKey().Key;
-                Console.Clear();
-                switch (insideOutside)
-                {
-                    case ConsoleKey.D1:
-                        sensorName = "Inne";
-                        acceptedAnswer = 1;
-                        break;
-                    case ConsoleKey.D2:
-                        sensorName = "Ute";
-                        acceptedAnswer = 1;
-                        break;
-                    default:
-                        Console.WriteLine("Ogiltig inmatning!");
-                        Thread.Sleep(1500);
-                        Console.Clear();
-                        break;
-                }
-            } while (acceptedAnswer < 1);
+                case ConsoleKey.D1:
+                    sensorName = "Inne";
+                    break;
+                case ConsoleKey.D2:
+                    sensorName = "Ute";
+                    break;
+                default:
+                    break;
+            }
             return sensorName;
         }
 
@@ -124,36 +110,22 @@ namespace WeatherDataLibrary
                 .Select(l => new
                 {
                     humidityAverage = l.Average(l => l.Humidity),
-                    //temp = l.Average(l => l.Temp),
-                    //humidity = l.Average(l => l.Humidity),
                     tempAverage = l.Average(l => l.Temp),
                     date = l.Key
-                    //((fuktighet - 78) * (temperatur / 15)) / 0,22
                 });
             var moldList = list
                 .Where(m => m.tempAverage >= 0 && m.humidityAverage >= 78)
                 .Select(m => new
                 {
                     date = m.date,
-                    //temp = m.temp,
-                    //humidity = m.humidity,
                     moldCalc = ((m.humidityAverage - 78) * (m.tempAverage / 15)) / 0.22
                 });
             foreach (var item in moldList)
             {
-                //if (item.humidity < 78 || item.temp < 0)
-                //{
-
-                //}
-                //else
-                //{
-                //}
-                    Day d = new Day();
-                    d.Date = item.date;
-                    //d.Temp = item.temp;
-                    //d.Humidity = (int)item.humidity;
-                    d.MoldRisk = item.moldCalc;
-                    result.Add(d);
+                Day d = new Day();
+                d.Date = item.date;
+                d.MoldRisk = item.moldCalc;
+                result.Add(d);
             }
             return result;
         }

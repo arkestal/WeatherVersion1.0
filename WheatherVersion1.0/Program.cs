@@ -43,10 +43,13 @@ namespace WeatherVersion1._0
 
         private static void GuestMenu(List<Data> datas)
         {
+            string inOrOutQuestion = "\n\t[1] Inne\n\t[2] Ute\n\tVälj: ";
             int dayCounter = Service.NumberOfDays(datas);
             bool isRunning = true;
+            ConsoleKey orderChoice;
             while (isRunning)
             {
+                string sensorName = "default";
                 Console.Clear();
                 Console.Write("\n\tVäderstationens gästmeny" +
                     "\n\n\t[1] Sök medeltemperatur för valt datum" +
@@ -63,164 +66,222 @@ namespace WeatherVersion1._0
                 switch (key)
                 {
                     case ConsoleKey.D1:
-                        string sensorName = Service.InOrOut();
+                        do
+                        {
+                            Console.Write(inOrOutQuestion);
+                            sensorName = Service.InOrOut(sensorName);
+                            if (sensorName == "default")
+                            {
+                                Console.WriteLine("\n\tOgiltig inmatning!");
+                                Thread.Sleep(1000);
+                                Console.Clear();
+                            }
+                        } while (sensorName == "default");
                         Console.Write("\n\tSkriv in datum enligt formatet [ÅÅÅÅ-MM-DD] för att se medeltemperaturen för det datumet." +
                             "\n\tSkriv [EXIT] för att att avbryta" +
                             "\n\tVälj: ");
-                        try
-                        {
-                            DateTime dateChoice = DateTime.Parse(Console.ReadLine());
-                            Console.Clear();
-                            string result = Service.AverageTemp(datas, dateChoice, sensorName);
-                            Console.Write($"\n\tMedeltemperatur {sensorName.ToUpper()}\n\n\t{result}°\n");
-                            Console.WriteLine("\n\tTryck på valfri tangent för att återgå till gästmenyn");
-                            Console.ReadKey();
-                        }
-                        catch (Exception)
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Återgår till gästmenyn. . .");
-                            Thread.Sleep(1500);
-                        }
-                        break;
-                    case ConsoleKey.D2:
-                        Console.WriteLine("\n\tMedeltemperatur");
-                        sensorName = Service.InOrOut();
-                        int counter = 0;
-                        Console.Write("\n\t[1] Varmast till kallast medeltemperatur" +
-                            "\n\t[2] Kallast till varmast medeltemperatur" +
-                            "\n\t[3] Återgå till gästmenyn" +
-                            "\n\tVälj: ");
-                        ConsoleKey warmCold = Console.ReadKey().Key;
-                        Console.Clear();
-                        List<Day> tempList = new List<Day>();
-                        switch (warmCold)
-                        {
-                            case ConsoleKey.D1:
-                                tempList = Service.WarmColdSort(datas, sensorName);
-                                tempList = tempList
-                                    .OrderByDescending(t => t.Temp)
-                                    .ToList();
-                                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Temperatur(fallande)\n");
-                                foreach (var item in tempList)
-                                {
-                                    counter++;
-                                    Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{Math.Round(item.Temp, 2)}°");
-                                }
-                                Console.WriteLine("\nTryck på valfri tangent för att återgå till gästmenyn");
+                        DateTime dateChoice;
+                        //do
+                        //{
+                            try
+                            {
+                                dateChoice = DateTime.Parse(Console.ReadLine());
+                                Console.Clear();
+                                string result = Service.AverageTemp(datas, dateChoice, sensorName);
+                                Console.Write($"\n\tMedeltemperatur {sensorName.ToUpper()}\n\n\t{result}°\n");
+                                Console.WriteLine("\n\tTryck på valfri tangent för att återgå till gästmenyn");
                                 Console.ReadKey();
-                                break;
-                            case ConsoleKey.D2:
-                                tempList = Service.WarmColdSort(datas, sensorName);
-                                tempList = tempList
-                                    .OrderBy(t => t.Temp)
-                                    .ToList();
-                                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Temperatur(stigande)\n");
-                                foreach (var item in tempList)
-                                {
-                                    counter++;
-                                    Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{Math.Round(item.Temp, 2)}°");
-                                }
-                                Console.WriteLine("\nTryck på valfri tangent för att återgå till gästmenyn");
-                                Console.ReadKey();
-                                break;
-                            default:
+
+                            }
+                            catch (Exception)
+                            {
+                                Console.Clear();
                                 Console.WriteLine("Återgår till gästmenyn. . .");
                                 Thread.Sleep(1500);
-                                break;
-                        }
+                            }
+                        //} while (dateChoice == null);
+                        break;
+                    case ConsoleKey.D2:
+                        int counter = 0;
+                        int warmColdOrder = 0;
+                        string tempOrder = "fallande";
+                        Console.WriteLine("\n\tMedeltemperatur");
+                        do
+                        {
+                            Console.Write(inOrOutQuestion);
+                            sensorName = Service.InOrOut(sensorName);
+                            if (sensorName == "default")
+                            {
+                                Console.WriteLine("\n\tOgiltig inmatning!");
+                                Thread.Sleep(1000);
+                                Console.Clear();
+                            }
+                        } while (sensorName == "default");
+                        List<Day> tempList = new List<Day>();
+                        tempList = Service.WarmColdSort(datas, sensorName);
+                        tempList = tempList
+                            .OrderByDescending(t => t.Temp)
+                            .ToList();
+                        do
+                        {
+                            Console.Clear();
+                            Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medeltemperatur({tempOrder})\n");
+                            foreach (var item in tempList)
+                            {
+                                counter++;
+                                Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{Math.Round(item.Temp, 2)}°");
+                            }
+                            Console.WriteLine("\n\t[ENTER] Ivertera listan\n\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
+                            orderChoice = Console.ReadKey().Key;
+                            switch (orderChoice)
+                            {
+                                case ConsoleKey.Enter:
+                                    counter = 0;
+                                    if (warmColdOrder == 0)
+                                    {
+                                        tempList = tempList
+                                            .OrderBy(t => t.Temp)
+                                            .ToList();
+                                        warmColdOrder = 1;
+                                        tempOrder = "stigande";
+                                    }
+                                    else
+                                    {
+                                        tempList = tempList
+                                            .OrderByDescending(t => t.Temp)
+                                            .ToList();
+                                        warmColdOrder = 0;
+                                        tempOrder = "fallande";
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } while (orderChoice == ConsoleKey.Enter);
                         break;
                     case ConsoleKey.D3:
-                        Console.WriteLine("\n\tMedelluftfuktighet");
-                        sensorName = Service.InOrOut();
                         counter = 0;
-                        Console.Write("\n\t[1] Torrast till fuktigast medelluftfuktighet" +
-                            "\n\t[2] Fuktigast till torrast medelluftfuktighet" +
-                            "\n\t[3] Återgå till gästmenyn" +
-                            "\n\tVälj: ");
-                        ConsoleKey wetDry = Console.ReadKey().Key;
-                        Console.Clear();
-                        List<Day> humidityList = new List<Day>();
-                        switch (wetDry)
+                        int dryWetOrder = 0;
+                        string humidityOrder = "fallande";
+                        Console.WriteLine("\n\tMedelluftfuktighet");
+                        do
                         {
-                            case ConsoleKey.D1:
-                                humidityList = Service.WetDrySort(datas, sensorName);
-                                humidityList = humidityList
-                                    .OrderBy(h => h.Humidity)
-                                    .ToList();
-                                Console.WriteLine($"\n{ sensorName.ToUpper()}\tDatum        Medelluftfuktighet(stigande)\n");
-                                foreach (var item in humidityList)
-                                {
-                                    counter++;
-                                    Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{item.Humidity} %");
-                                }
-                                Console.WriteLine("\nTryck på valfri tangent för att återgå till gästmenyn");
-                                Console.ReadKey();
-                                break;
-                            case ConsoleKey.D2:
-                                humidityList = Service.WetDrySort(datas, sensorName);
-                                humidityList = humidityList
-                                    .OrderByDescending(h => h.Humidity)
-                                    .ToList();
-                                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medelluftfuktighet(fallande)\n");
-                                foreach (var item in humidityList)
-                                {
-                                    counter++;
-                                    Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{item.Humidity} %");
-                                }
-                                Console.WriteLine("\nTryck på valfri tangent för att återgå till gästmenyn");
-                                Console.ReadKey();
-                                break;
-                            default:
-                                break;
-                        }
+                            Console.Write(inOrOutQuestion);
+                            sensorName = Service.InOrOut(sensorName);
+                            if (sensorName == "default")
+                            {
+                                Console.WriteLine("\n\tOgiltig inmatning!");
+                                Thread.Sleep(1000);
+                                Console.Clear();
+                            }
+                        } while (sensorName == "default");
+                        List<Day> humidityList = new List<Day>();
+                        humidityList = Service.WetDrySort(datas, sensorName);
+                        humidityList = humidityList
+                            .OrderByDescending(h => h.Humidity)
+                            .ToList();
+                        do
+                        {
+                            Console.Clear();
+                            Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medelluftfuktighet({humidityOrder})\n");
+                            foreach (var item in humidityList)
+                            {
+                                counter++;
+                                Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{item.Humidity} %");
+                            }
+                            Console.WriteLine("\n\t[ENTER] Ivertera listan\n\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
+                            orderChoice = Console.ReadKey().Key;
+                            switch (orderChoice)
+                            {
+                                case ConsoleKey.Enter:
+                                    counter = 0;
+                                    if (dryWetOrder == 0)
+                                    {
+                                        humidityList = humidityList
+                                            .OrderBy(t => t.Humidity)
+                                            .ToList();
+                                        dryWetOrder = 1;
+                                        humidityOrder = "stigande";
+                                    }
+                                    else
+                                    {
+                                        humidityList = humidityList
+                                            .OrderByDescending(t => t.Humidity)
+                                            .ToList();
+                                        dryWetOrder = 0;
+                                        humidityOrder = "fallande";
+                                    }
+                                    break;
+                            }
+                        } while (orderChoice == ConsoleKey.Enter);
                         break;
                     case ConsoleKey.D4:
-                        Console.WriteLine("\n\tMögelrisk");
-                        sensorName = Service.InOrOut();
                         counter = 0;
-                        Console.Write("\n\t[1] Minst till störst risk för mögel" +
-                            "\n\t[2] Störst till minst risk för mögel" +
-                            "\n\t[3] Återgå till gästmenyn" +
-                            "Välj: ");
-                        ConsoleKey moldRisk = Console.ReadKey().Key;
-                        Console.Clear();
-                        List<Day> moldRiskList = new List<Day>();
-                        switch (moldRisk)
+                        int moldOrder = 0;
+                        string moldRiskOrder = "fallande";
+                        Console.WriteLine("\n\tMögelrisk");
+                        do
                         {
-                            case ConsoleKey.D1:
-                                moldRiskList = Service.MoldRiskSort(datas, sensorName);
-                                moldRiskList = moldRiskList
-                                    .OrderBy(m => m.MoldRisk)
-                                    .ToList();
-                                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Risk för mögel(stigande)\n");
-                                foreach (var item in moldRiskList)
-                                {
-                                    counter++;
-                                    Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{Math.Round(item.MoldRisk, 2)} %");
-                                }
-                                break;
-                            case ConsoleKey.D2:
-                                moldRiskList = Service.MoldRiskSort(datas, sensorName);
-                                moldRiskList = moldRiskList
-                                    .OrderByDescending(m => m.MoldRisk)
-                                    .ToList();
-                                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Risk för mögel(fallande)\n");
-                                foreach (var item in moldRiskList)
-                                {
-                                    counter++;
-                                    Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{Math.Round(item.MoldRisk, 2)} %");
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        Console.WriteLine($"\n\tResterande {dayCounter - counter} dagar löper ingen risk för mögel.");
-                        Console.WriteLine("\n\tTryck på valfri tangent för att återgå till gästmenyn");
-                        Console.ReadKey();
+                            Console.Write(inOrOutQuestion);
+                            sensorName = Service.InOrOut(sensorName);
+                            if (sensorName == "default")
+                            {
+                                Console.WriteLine("\n\tOgiltig inmatning!");
+                                Thread.Sleep(1000);
+                                Console.Clear();
+                            }
+                        } while (sensorName == "default");
+                        List<Day> moldRiskList = new List<Day>();
+                        moldRiskList = Service.MoldRiskSort(datas, sensorName);
+                        moldRiskList = moldRiskList
+                            .OrderByDescending(h => h.MoldRisk)
+                            .ToList();
+                        do
+                        {
+                            Console.Clear();
+                            Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Mögelrisk({moldRiskOrder})\n");
+                            foreach (var item in moldRiskList)
+                            {
+                                counter++;
+                                Console.WriteLine($"{counter}\t|{item.Date.ToShortDateString()}     |{Math.Round(item.MoldRisk, 2)} %");
+                            }
+
+                            if (counter == 0)
+                            {
+                                Console.WriteLine("\n\tIngen mögelrisk att rapportera!");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"\n\tResterande {dayCounter - counter} dagar löper ingen risk för mögel.");
+                            }
+                            Console.WriteLine("\n\t[ENTER] Ivertera listan\n\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
+                            orderChoice = Console.ReadKey().Key;
+                            switch (orderChoice)
+                            {
+                                case ConsoleKey.Enter:
+                                    counter = 0;
+                                    if (moldOrder == 0)
+                                    {
+                                        moldRiskList = moldRiskList
+                                            .OrderBy(m => m.MoldRisk)
+                                            .ToList();
+                                        moldOrder = 1;
+                                        moldRiskOrder = "stigande";
+                                    }
+                                    else
+                                    {
+                                        moldRiskList = moldRiskList
+                                            .OrderByDescending(m => m.MoldRisk)
+                                            .ToList();
+                                        moldOrder = 0;
+                                        moldRiskOrder = "fallande";
+                                    }
+                                    break;
+                            }
+                        } while (orderChoice == ConsoleKey.Enter);
                         break;
                     case ConsoleKey.D5:
-
+                        Console.WriteLine("\n\tMeterologisk höst");
                         break;
                     case ConsoleKey.D6:
 
