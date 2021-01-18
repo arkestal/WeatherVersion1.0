@@ -103,7 +103,6 @@ namespace WeatherVersion1._0
                         break;
                     case ConsoleKey.D2:
                         int counter = 0;
-                        int warmColdOrder = 0;
                         string tempOrder = "fallande";
                         Console.WriteLine("\n\tMedeltemperatur");
                         do
@@ -137,12 +136,11 @@ namespace WeatherVersion1._0
                             {
                                 case ConsoleKey.Enter:
                                     counter = 0;
-                                    if (warmColdOrder == 0)
+                                    if (tempOrder == "fallande")
                                     {
                                         tempList = tempList
                                             .OrderBy(t => t.Temp)
                                             .ToList();
-                                        warmColdOrder = 1;
                                         tempOrder = "stigande";
                                     }
                                     else
@@ -150,7 +148,6 @@ namespace WeatherVersion1._0
                                         tempList = tempList
                                             .OrderByDescending(t => t.Temp)
                                             .ToList();
-                                        warmColdOrder = 0;
                                         tempOrder = "fallande";
                                     }
                                     break;
@@ -161,7 +158,6 @@ namespace WeatherVersion1._0
                         break;
                     case ConsoleKey.D3:
                         counter = 0;
-                        int dryWetOrder = 0;
                         string humidityOrder = "fallande";
                         Console.WriteLine("\n\tMedelluftfuktighet");
                         do
@@ -195,12 +191,11 @@ namespace WeatherVersion1._0
                             {
                                 case ConsoleKey.Enter:
                                     counter = 0;
-                                    if (dryWetOrder == 0)
+                                    if (humidityOrder == "fallande")
                                     {
                                         humidityList = humidityList
                                             .OrderBy(t => t.Humidity)
                                             .ToList();
-                                        dryWetOrder = 1;
                                         humidityOrder = "stigande";
                                     }
                                     else
@@ -208,7 +203,6 @@ namespace WeatherVersion1._0
                                         humidityList = humidityList
                                             .OrderByDescending(t => t.Humidity)
                                             .ToList();
-                                        dryWetOrder = 0;
                                         humidityOrder = "fallande";
                                     }
                                     break;
@@ -217,7 +211,6 @@ namespace WeatherVersion1._0
                         break;
                     case ConsoleKey.D4:
                         counter = 0;
-                        int moldOrder = 0;
                         string moldRiskOrder = "fallande";
                         Console.WriteLine("\n\tMögelrisk");
                         do
@@ -260,12 +253,11 @@ namespace WeatherVersion1._0
                             {
                                 case ConsoleKey.Enter:
                                     counter = 0;
-                                    if (moldOrder == 0)
+                                    if (moldRiskOrder == "fallande")
                                     {
                                         moldRiskList = moldRiskList
                                             .OrderBy(m => m.MoldRisk)
                                             .ToList();
-                                        moldOrder = 1;
                                         moldRiskOrder = "stigande";
                                     }
                                     else
@@ -273,7 +265,6 @@ namespace WeatherVersion1._0
                                         moldRiskList = moldRiskList
                                             .OrderByDescending(m => m.MoldRisk)
                                             .ToList();
-                                        moldOrder = 0;
                                         moldRiskOrder = "fallande";
                                     }
                                     break;
@@ -282,9 +273,12 @@ namespace WeatherVersion1._0
                         break;
                     case ConsoleKey.D5:
                         Console.WriteLine("\n\tMeterologisk höst");
+
                         break;
                     case ConsoleKey.D6:
-
+                        string winterDate = Service.MeteorologicalWinter(datas, 2016);
+                        Console.WriteLine(winterDate);
+                        Console.ReadLine();
                         break;
                     case ConsoleKey.D7:
                         isRunning = false;
@@ -295,7 +289,6 @@ namespace WeatherVersion1._0
                         break;
                 }
             }
-
         }
 
 

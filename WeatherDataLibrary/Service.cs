@@ -130,5 +130,50 @@ namespace WeatherDataLibrary
             return result;
         }
 
+        public static string MeteorologicalWinter(List<Data> datas, int year)
+        {
+            string result = "Ingen meterologisk vinter inträffar";
+
+            var winterCheck = datas
+                .Where(a => a.SensorName == "Ute")// && a.Date.Year == year)
+                                                  //.Where(a => a.Date.Month >= 8 && a.Date.Month <= 2)
+                .GroupBy(a => a.Date.Date)
+                .OrderBy(a => a.Key)
+                .Where(a => a.Key >= new DateTime(year, 08, 01) && a.Key <= new DateTime(year + 1, 02, 15))
+                .Select(a => new
+                {
+                    tempAverage = a.Average(a => a.Temp),
+                    date = a.Key
+                })
+                .ToList();
+            //.OrderBy(a => a.date);
+
+            int counter = 0;
+            foreach (var item in winterCheck)
+            {
+                if (item.tempAverage <= 0)
+                {
+                    counter++;
+                    if (counter == 5)
+                    {
+                        result = $"Meterologisk vinter inträffar {item.date.AddDays(-4).ToShortDateString()}";
+                        break;
+                    }
+                }
+                else
+                {
+                    counter = 0;
+                }
+            }
+
+            //foreach (var item in autumnCheck)
+            //{
+            //    Console.WriteLine($"{item.date}\t{item.tempAverage}");
+            //}
+            //Console.ReadLine();
+
+
+            return result;
+        }
     }
 }
