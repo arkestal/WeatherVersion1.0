@@ -45,6 +45,7 @@ namespace WeatherVersion1._0
         {
             string inOrOutQuestion = "\n\t[1] Inne\n\t[2] Ute\n\tVälj: ";
             int dayCounter = Service.NumberOfDays(datas);
+            List<int> yearCheck = Service.Year(datas);
             bool isRunning = true;
             ConsoleKey orderChoice;
             while (isRunning)
@@ -77,29 +78,42 @@ namespace WeatherVersion1._0
                                 Console.Clear();
                             }
                         } while (sensorName == "default");
-                        Console.Write("\n\tSkriv in datum enligt formatet [ÅÅÅÅ-MM-DD] för att se medeltemperaturen för det datumet." +
-                            "\n\tSkriv [EXIT] för att att avbryta" +
-                            "\n\tVälj: ");
                         DateTime dateChoice;
-                        //do
-                        //{
-                            try
-                            {
-                                dateChoice = DateTime.Parse(Console.ReadLine());
-                                Console.Clear();
-                                string result = Service.AverageTemp(datas, dateChoice, sensorName);
-                                Console.Write($"\n\tMedeltemperatur {sensorName.ToUpper()}\n\n\t{result}°\n");
-                                Console.WriteLine("\n\tTryck på valfri tangent för att återgå till gästmenyn");
-                                Console.ReadKey();
+                        bool loopRunning = true;
+                        do
+                        {
+                            Console.Clear();
+                            Console.Write("\n\tSkriv in datum enligt formatet [ÅÅÅÅ-MM-DD] för att se medeltemperaturen för det datumet." +
+                                "\n\tSkriv [EXIT] för att återgå till gästmenyn" +
+                                "\n\tVälj: ");
 
-                            }
-                            catch (Exception)
+                            string input = Console.ReadLine();
+                            Console.Clear();
+                            if (input.ToUpper() == "EXIT")
                             {
-                                Console.Clear();
-                                Console.WriteLine("Återgår till gästmenyn. . .");
-                                Thread.Sleep(1500);
+                                Console.WriteLine("\n\tÅtergår till gästmenyn. . .");
+                                loopRunning = false;
+                                Thread.Sleep(1000);
                             }
-                        //} while (dateChoice == null);
+                            else
+                            {
+                                bool check = DateTime.TryParse(input, out dateChoice);
+                                Console.Clear();
+                                if (check)
+                                {
+                                    string result = Service.AverageTemp(datas, dateChoice, sensorName);
+                                    Console.Write($"\n\tMedeltemperatur {sensorName.ToUpper()}\n\n\t{result}\n");
+                                    Console.WriteLine("\n\tTryck på valfri tangent för att återgå till gästmenyn");
+                                    loopRunning = false;
+                                    Console.ReadKey();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("\n\tOgiltig inmatning!");
+                                    Thread.Sleep(1500);
+                                }
+                            }
+                        } while (loopRunning);
                         break;
                     case ConsoleKey.D2:
                         int counter = 0;
@@ -273,11 +287,21 @@ namespace WeatherVersion1._0
                         break;
                     case ConsoleKey.D5:
                         Console.WriteLine("\n\tMeterologisk höst");
-
+                        List<string> autumnDate = Service.MeteorologicalWinterAutumn(datas, yearCheck, 10);
+                        foreach (var item in autumnDate)
+                        {
+                            Console.WriteLine(item);
+                        }
+                        Console.ReadLine();
                         break;
                     case ConsoleKey.D6:
-                        string winterDate = Service.MeteorologicalWinter(datas, 2016);
-                        Console.WriteLine(winterDate);
+                        Console.WriteLine("\n\tMeterologisk vinter");
+
+                        List<string> winterDate = Service.MeteorologicalWinterAutumn(datas, yearCheck, 0);
+                        foreach (var item in winterDate)
+                        {
+                            Console.WriteLine(item);
+                        }
                         Console.ReadLine();
                         break;
                     case ConsoleKey.D7:
