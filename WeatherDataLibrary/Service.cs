@@ -10,17 +10,17 @@ namespace WeatherDataLibrary
     {
         public static List<int> Year(List<Data> datas)
         {
-            List<int> YEARS = new List<int>();
+            List<int> yearList = new List<int>();
 
             var year = datas
                 .GroupBy(y => y.Date.Year);
 
             foreach (var item in year)
             {
-                YEARS.Add(item.Key);
+                yearList.Add(item.Key);
             }
-            return YEARS;
-        }
+            return yearList;
+        }//Possible to check start of seasons for multiple years if additional data is added
         public static List<Day> WarmColdSort(List<Data> datas, string sensorName)
         {
             List<Day> result = new List<Day>();
@@ -50,7 +50,7 @@ namespace WeatherDataLibrary
                 var temp = datas
                     .Where(t => t.SensorName == sensorName && t.Date == dateChoice)
                     .Average(t => t.Temp);
-                string result = $"{dateChoice.ToShortDateString()}  {Math.Round(temp, 2)}°";
+                string result = $"{dateChoice.ToShortDateString()}  {Math.Round(temp, 2)}°C";
                 return result;
             }
             catch (Exception)
@@ -170,12 +170,12 @@ namespace WeatherDataLibrary
                     if (item.tempAverage < tempLimit)
                     {
                         counter++;
-                        if (rowCounter > 0 && seasonCheck[rowCounter - 1].date.AddDays(1) == item.date)
+                        if (rowCounter > 0 && seasonCheck[rowCounter - 1].date.AddDays(1) == item.date) //Checks if we have 5 days in a row or just 5 measurements in a row.
                         {
                             if (counter == 5)
                             {
                                 yearlyResult = tempLimit == 0 ? $"\n\n\tMeterologisk vinter inträffar {item.date.AddDays(-4).ToShortDateString()}" :
-                                    $"\n\n\tMeterologisk höst inträffar {item.date.AddDays(-4).ToShortDateString()}";
+                                    $"\n\n\tMeterologisk höst inträffar {item.date.AddDays(-4).ToShortDateString()}"; //In this case checks if we are looking for winter (templimit == 0) or autumn (templimit == 10)
                                 result.Add(yearlyResult);
                                 break;
                             }
@@ -199,17 +199,6 @@ namespace WeatherDataLibrary
                 }
             }
             return result;
-        }
-
-        public static void MeasuringGapCheck(List<Data> datas, int year)
-        {
-            //var gap = datas
-            //    .Where(g => g.SensorName == "Ute")
-            //    .GroupBy(g => g.Date.Date)
-            //    .OrderBy(g => g.Key)
-            //    .Where(g => g.Key >= new DateTime(year, 08, 01) && g.Key <= new DateTime(year + 1, 02, 15))
-            //    .Where(g => )
-            //    .Select(g => 
         }
     }
 }
