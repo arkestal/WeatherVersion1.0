@@ -8,21 +8,6 @@ namespace WeatherDataLibrary
 {
     public class Service
     {
-        public static void temp()
-        {
-            DateTime d = new();
-            var i = d.Year;
-        }
-        public static List<Data> DataBase()
-        {
-            using (var db = new DataContext())
-            {
-                List<Data> datas = new List<Data>();
-                datas = db.Datas.ToList();
-                return datas;
-            }
-        }
-
         public static List<int> Year(List<Data> datas)
         {
             List<int> YEARS = new List<int>();
@@ -162,8 +147,8 @@ namespace WeatherDataLibrary
             List<string> result = new List<string>();
             foreach (var year in yearCheck)
             {
-                string yearlyResult = tempLimit == 0 ? $"Ingen meterologisk vinter inträffade säsongen {year}/{year + 1}" :
-                    $"Ingen meterologisk höst inträffade året {year}";
+                string yearlyResult = tempLimit == 0 ? $"\n\n\tIngen meterologisk vinter inträffade säsongen {year}/{year + 1}" :
+                    $"\n\n\tIngen meterologisk höst inträffade året {year}";
                 var seasonCheck = datas
                     .Where(a => a.SensorName == "Ute")
                     .GroupBy(a => a.Date.Date)
@@ -189,8 +174,8 @@ namespace WeatherDataLibrary
                         {
                             if (counter == 5)
                             {
-                                yearlyResult = tempLimit == 0 ? $"Meterologisk vinter inträffar {item.date.AddDays(-4).ToShortDateString()}" :
-                                    $"Meterologisk höst inträffar {item.date.AddDays(-4).ToShortDateString()}";
+                                yearlyResult = tempLimit == 0 ? $"\n\n\tMeterologisk vinter inträffar {item.date.AddDays(-4).ToShortDateString()}" :
+                                    $"\n\n\tMeterologisk höst inträffar {item.date.AddDays(-4).ToShortDateString()}";
                                 result.Add(yearlyResult);
                                 break;
                             }
@@ -208,7 +193,7 @@ namespace WeatherDataLibrary
                     }
                     rowCounter++;
                 }
-                if (seasonCheck.Count != 0 && (yearlyResult == $"Ingen meterologisk vinter inträffade säsongen {year}/{year + 1}" || yearlyResult == $"Ingen meterologisk höst inträffade året {year}"))
+                if (seasonCheck.Count != 0 && (yearlyResult == $"\n\n\tIngen meterologisk vinter inträffade säsongen {year}/{year + 1}" || yearlyResult == $"\n\n\tIngen meterologisk höst inträffade året {year}"))
                 {
                     result.Add(yearlyResult);
                 }
