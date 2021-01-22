@@ -106,7 +106,7 @@ namespace WeatherDataLibrary
             {
                 Day d = new Day();
                 d.Date = item.date;
-                d.Humidity = (int)item.average;
+                d.Humidity = item.average;
                 result.Add(d);
             }
             return result;

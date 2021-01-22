@@ -10,7 +10,7 @@ namespace WeatherDataLibrary.Models
     {
         public DateTime Date { get; set; }
         public double Temp { get; set; }
-        public int Humidity { get; set; }
+        public double Humidity { get; set; }
         public double MoldRisk { get; set; }
     }
 }

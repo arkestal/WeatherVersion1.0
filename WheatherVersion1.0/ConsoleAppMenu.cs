@@ -9,6 +9,9 @@ namespace WeatherVersion1._0
 {
     public class ConsoleAppMenu
     {
+        private static string resultSet = "Topp 10";
+        private static ConsoleKey orderChoice;
+        private static string sortingOrder = "fallande";
         public static void GuestMenu(List<Data> datas)
         {
             string inOrOutQuestion = "\n\t[1] Inne\n\t[2] Ute\n\tVälj: ";
@@ -80,14 +83,14 @@ namespace WeatherVersion1._0
             {
                 Console.Clear();
                 Console.Write("\n\tSkriv in datum enligt formatet [ÅÅÅÅ-MM-DD] för att se medeltemperaturen för det datumet." +
-                    "\n\tSkriv [EXIT] för att återgå till gästmenyn" +
+                    "\n\tSkriv [EXIT] för att återgå till huvudmenyn" +
                     "\n\tVälj: ");
 
                 string input = Console.ReadLine();
                 Console.Clear();
                 if (input.ToUpper() == "EXIT")
                 {
-                    Console.WriteLine("\n\tÅtergår till gästmenyn. . .");
+                    Console.WriteLine("\n\tÅtergår till huvudmenyn. . .");
                     loopRunning = false;
                     Thread.Sleep(1000);
                 }
@@ -99,7 +102,7 @@ namespace WeatherVersion1._0
                     {
                         string result = Service.AverageTemp(datas, dateChoice, sensorName);
                         Console.Write($"\n\tMedeltemperatur {sensorName.ToUpper()}\n\n\t{result}\n");
-                        Console.WriteLine("\n\tTryck på valfri tangent för att återgå till gästmenyn");
+                        Console.WriteLine("\n\tTryck på valfri tangent för att återgå till huvudmenyn");
                         loopRunning = false;
                         Console.ReadKey();
                     }
@@ -113,9 +116,6 @@ namespace WeatherVersion1._0
         }
         public static void WarmColdCase(List<Data> datas, string inOrOutQuestion, string sensorName, int resultAmount)
         {
-            string order = "Topp 10";
-            ConsoleKey orderChoice;
-            string tempOrder = "fallande";
             Console.WriteLine("\n\tMedeltemperatur");
             do
             {
@@ -136,48 +136,41 @@ namespace WeatherVersion1._0
             do
             {
                 Console.Clear();
-                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medeltemperatur({tempOrder})\t{order}\n");
+                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medeltemperatur({sortingOrder})\t{resultSet}\n");
                 for (int i = 0; i < resultAmount; i++)
                 {
                     Console.WriteLine($"{i + 1}\t|{tempList[i].Date.ToShortDateString()}     |{Math.Round(tempList[i].Temp, 2)}°C");
                 }
-                if (resultAmount == tempList.Count())
-                {
-                    Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa endast topp 10\n\t\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
-                }
-                else
-                {
-                    Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa fullständig lista\n\t\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
-                }
+                ResultAmountOutput(resultAmount, tempList, resultSet);
                 orderChoice = Console.ReadKey().Key;
                 switch (orderChoice)
                 {
                     case ConsoleKey.Enter:
-                        if (tempOrder == "fallande")
+                        if (sortingOrder == "fallande")
                         {
                             tempList = tempList
                                 .OrderBy(t => t.Temp)
                                 .ToList();
-                            tempOrder = "stigande";
+                            sortingOrder = "stigande";
                         }
                         else
                         {
                             tempList = tempList
                                 .OrderByDescending(t => t.Temp)
                                 .ToList();
-                            tempOrder = "fallande";
+                            sortingOrder = "fallande";
                         }
                         break;
                     case ConsoleKey.A:
                         if (resultAmount == 10)
                         {
                             resultAmount = tempList.Count();
-                            order = "Fullständig lista";
+                            resultSet = "Fullständig lista";
                         }
                         else
                         {
                             resultAmount = 10;
-                            order = "Topp 10";
+                            resultSet = "Topp 10";
                         }
                         break;
                     default:
@@ -187,9 +180,6 @@ namespace WeatherVersion1._0
         }
         public static void DryWetCase(List<Data> datas, string inOrOutQuestion, string sensorName, int resultAmount)
         {
-            string order = "Topp 10";
-            ConsoleKey orderChoice;
-            string humidityOrder = "fallande";
             Console.WriteLine("\n\tMedelluftfuktighet");
             do
             {
@@ -210,49 +200,41 @@ namespace WeatherVersion1._0
             do
             {
                 Console.Clear();
-                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medelluftfuktighet({humidityOrder})\t{order}\n");
+                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Medelluftfuktighet({sortingOrder})\t{resultSet}\n");
                 for (int i = 0; i < resultAmount; i++)
                 {
-                    Console.WriteLine($"{i + 1}\t|{humidityList[i].Date.ToShortDateString()}     |{humidityList[i].Humidity} %");
+                    Console.WriteLine($"{i + 1}\t|{humidityList[i].Date.ToShortDateString()}     |{Math.Round(humidityList[i].Humidity, 2)} %");
                 }
-                if (resultAmount == humidityList.Count())
-                {
-                    Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa endast topp 10\n\t\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
-                }
-                else
-                {
-                    Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa fullständig lista\n\t\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
-                }
+                ResultAmountOutput(resultAmount, humidityList, resultSet);
                 orderChoice = Console.ReadKey().Key;
-
                 switch (orderChoice)
                 {
                     case ConsoleKey.Enter:
-                        if (humidityOrder == "fallande")
+                        if (sortingOrder == "fallande")
                         {
                             humidityList = humidityList
                                 .OrderBy(t => t.Humidity)
                                 .ToList();
-                            humidityOrder = "stigande";
+                            sortingOrder = "stigande";
                         }
                         else
                         {
                             humidityList = humidityList
                                 .OrderByDescending(t => t.Humidity)
                                 .ToList();
-                            humidityOrder = "fallande";
+                            sortingOrder = "fallande";
                         }
                         break;
                     case ConsoleKey.A:
                         if (resultAmount == 10)
                         {
-                            resultAmount = humidityList.Count();
-                            order = "Fullständig lista";
+                            resultAmount = humidityList.Count;
+                            resultSet = "Fullständig lista";
                         }
                         else
                         {
                             resultAmount = 10;
-                            order = "Topp 10";
+                            resultSet = "Topp 10";
                         }
                         break;
                 }
@@ -260,10 +242,7 @@ namespace WeatherVersion1._0
         }
         public static void MoldRiskCase(List<Data> datas, string inOrOutQuestion, string sensorName, int resultAmount)
         {
-            string order = "Topp 10";
             int dayCounter = Service.NumberOfDays(datas);
-            ConsoleKey orderChoice;
-            string moldRiskOrder = "fallande";
             Console.WriteLine("\n\tMögelrisk");
             do
             {
@@ -283,60 +262,52 @@ namespace WeatherVersion1._0
                 .ToList();
             do
             {
-                int counter = 0;
                 Console.Clear();
-                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Mögelrisk({moldRiskOrder})\t{order}\n");
-                for (int i = 0; i < resultAmount; i++)
+                Console.WriteLine($"\n{sensorName.ToUpper()}\tDatum        Mögelrisk({sortingOrder})\t{resultSet}\n");
+                if (moldRiskList.Count() != 0)
                 {
-                    counter++;
-                    Console.WriteLine($"{i + 1}\t|{moldRiskList[i].Date.ToShortDateString()}     |{Math.Round(moldRiskList[i].MoldRisk, 2)} %");
+                    for (int i = 0; i < resultAmount; i++)
+                    {
+                        Console.WriteLine($"{i + 1}\t|{moldRiskList[i].Date.ToShortDateString()}     |{Math.Round(moldRiskList[i].MoldRisk, 2)} %");
+                    }
+                    Console.WriteLine($"\n\t{dayCounter - moldRiskList.Count()} dagar löper ingen risk för mögel.");
+                    ResultAmountOutput(resultAmount, moldRiskList, resultSet);
                 }
-                if (counter == 0)
+                else
                 {
                     Console.WriteLine("\n\tIngen mögelrisk att rapportera!");
-                }
-                else
-                {
-                    Console.WriteLine($"\n\t{dayCounter - moldRiskList.Count()} dagar löper ingen risk för mögel.");
-                }
-                if (resultAmount == moldRiskList.Count())
-                {
-                    Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa endast topp 10\n\t\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
-                }
-                else
-                {
-                    Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa fullständig lista\n\t\tTryck annars på valfri annan tangent för att återgå till gästmenyn");
+                    ResultAmountOutput(resultAmount, moldRiskList, resultSet);
                 }
                 orderChoice = Console.ReadKey().Key;
+                //orderChoice = SortingOrders(orderChoice, moldRiskList, moldRiskOrder, resultAmount, resultSet);
                 switch (orderChoice)
                 {
                     case ConsoleKey.Enter:
-                        counter = 0;
-                        if (moldRiskOrder == "fallande")
+                        if (sortingOrder == "fallande")
                         {
                             moldRiskList = moldRiskList
                                 .OrderBy(m => m.MoldRisk)
                                 .ToList();
-                            moldRiskOrder = "stigande";
+                            sortingOrder = "stigande";
                         }
                         else
                         {
                             moldRiskList = moldRiskList
                                 .OrderByDescending(m => m.MoldRisk)
                                 .ToList();
-                            moldRiskOrder = "fallande";
+                            sortingOrder = "fallande";
                         }
                         break;
                     case ConsoleKey.A:
                         if (resultAmount == 10)
                         {
-                            resultAmount = moldRiskList.Count();
-                            order = "Fullständig lista";
+                            resultAmount = moldRiskList.Count;
+                            resultSet = "Fullständig lista";
                         }
                         else
                         {
                             resultAmount = 10;
-                            order = "Topp 10";
+                            resultSet = "Topp 10";
                         }
                         break;
                 }
@@ -351,7 +322,7 @@ namespace WeatherVersion1._0
             {
                 Console.WriteLine(item);
             }
-            Console.WriteLine("\n\n\tTryck på valfri tangent för att återgå till gästmenyn");
+            Console.WriteLine("\n\n\tTryck på valfri tangent för att återgå till huvudmenyn");
             Console.ReadKey();
         }
         public static void WinterCase(List<Data> datas)
@@ -363,8 +334,19 @@ namespace WeatherVersion1._0
             {
                 Console.WriteLine(item);
             }
-            Console.WriteLine("\n\n\tTryck på valfri tangent för att återgå till gästmenyn");
+            Console.WriteLine("\n\n\tTryck på valfri tangent för att återgå till huvudmenyn");
             Console.ReadKey();
+        }
+        private static void ResultAmountOutput(int resultAmount, List<Day> list, string order)
+        {
+            if (resultAmount == list.Count())
+            {
+                Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa endast topp 10\n\t\tTryck annars på valfri annan tangent för att återgå till huvudmenyn");
+            }
+            else
+            {
+                Console.WriteLine("\n\t[ENTER]\tIvertera listan\n\t[A]\tVisa fullständig lista\n\t\tTryck annars på valfri annan tangent för att återgå till huvudmenyn");
+            }
         }
     }
 }
