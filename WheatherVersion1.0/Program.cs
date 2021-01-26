@@ -15,7 +15,7 @@ namespace WeatherVersion1._0
             Console.WriteLine("Laddar in databas i lokal lista. . .");
             List<Data> workingDB = DbService.DataBase();
 
-            ConsoleAppMenu.GuestMenu(workingDB);
+            ConsoleAppMenu.Menu(workingDB);
         }
     }
 }

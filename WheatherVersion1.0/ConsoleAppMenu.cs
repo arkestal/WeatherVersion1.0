@@ -10,9 +10,10 @@ namespace WeatherVersion1._0
     public class ConsoleAppMenu
     {
         private static string resultSet = "Topp 10";
-        private static ConsoleKey orderChoice;
         private static string sortingOrder = "fallande";
-        public static void GuestMenu(List<Data> datas)
+        private static ConsoleKey orderChoice;
+
+        public static void Menu(List<Data> datas)
         {
             string inOrOutQuestion = "\n\t[1] Inne\n\t[2] Ute\n\tVälj: ";
             int resultAmount = 10;
@@ -279,7 +280,6 @@ namespace WeatherVersion1._0
                     ResultAmountOutput(resultAmount, moldRiskList, resultSet);
                 }
                 orderChoice = Console.ReadKey().Key;
-                //orderChoice = SortingOrders(orderChoice, moldRiskList, moldRiskOrder, resultAmount, resultSet);
                 switch (orderChoice)
                 {
                     case ConsoleKey.Enter:

@@ -161,8 +161,6 @@ namespace WeatherDataLibrary
                     })
                     .ToList();
 
-                //MeasuringGapCheck(datas, year);
-
                 int rowCounter = 0;
                 int counter = 0;
                 foreach (var item in seasonCheck)
