@@ -39,10 +39,8 @@ namespace WeatherDataLibrary.DataAccess
         {
             using (var db = new DataContext())
             {
-                Console.WriteLine("Lägger till databas");
-
+                //Adding database
                 db.AddRange(sensors);
-                Console.WriteLine("Klar!");
                 db.SaveChanges();
             }
         }

@@ -12,10 +12,12 @@ namespace WeatherVersion1._0
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Laddar in databas i lokal lista. . .");
-            List<Data> workingDB = DbService.DataBase();
+            //DbService.FixDb(); //Setting up the database
 
-            ConsoleAppMenu.Menu(workingDB);
+            Console.WriteLine("Laddar in databas i lokal lista. . .");
+            List<Data> datas = DbService.DataBase();
+
+            ConsoleAppMenu.Menu(datas);
         }
     }
 }

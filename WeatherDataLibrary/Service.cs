@@ -42,7 +42,6 @@ namespace WeatherDataLibrary
             }
             return result;
         }
-
         public static string AverageTemp(List<Data> datas, DateTime dateChoice, string sensorName)
         {
             try
@@ -59,7 +58,6 @@ namespace WeatherDataLibrary
                 return result;
             }
         }
-
         public static int NumberOfDays(List<Data> datas)
         {
             int numberOfDays = 0;
@@ -71,7 +69,6 @@ namespace WeatherDataLibrary
             }
             return numberOfDays;
         }
-
         public static string InOrOut(string sensorName)
         {
             ConsoleKey insideOutside = Console.ReadKey().Key;
@@ -89,7 +86,6 @@ namespace WeatherDataLibrary
             }
             return sensorName;
         }
-
         public static List<Day> WetDrySort(List<Data> datas, string sensorName)
         {
             List<Day> result = new List<Day>();
@@ -111,7 +107,6 @@ namespace WeatherDataLibrary
             }
             return result;
         }
-
         public static List<Day> MoldRiskSort(List<Data> datas, string sensorName)
         {
             List<Day> result = new List<Day>();
@@ -141,7 +136,6 @@ namespace WeatherDataLibrary
             }
             return result;
         }
-
         public static List<string> MeteorologicalWinterAutumn(List<Data> datas, List<int> yearCheck, int tempLimit)
         {
             List<string> result = new List<string>();
